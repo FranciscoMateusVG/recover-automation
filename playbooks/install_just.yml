@@ -1,0 +1,17 @@
+---
+- name: Install Just Command Runner
+  hosts: localhost
+  tasks:
+    - name: Install Just Command Runner
+      homebrew:
+        name: just
+        state: present
+
+    - name: Confirm Just installation
+      command: just --version
+      register: just_version
+      changed_when: false
+
+    - name: Output version
+      debug:
+        msg: 'Just version: {{ just_version.stdout }}'

@@ -1,0 +1,17 @@
+---
+- name: Install Git
+  hosts: localhost
+  tasks:
+    - name: Install Git
+      homebrew:
+        name: git
+        state: present
+
+    - name: Confirm Git installation
+      command: git --version
+      register: git_version
+      changed_when: false
+
+    - name: Output version
+      debug:
+        msg: 'Git version: {{ git_version.stdout }}'
