@@ -1,0 +1,78 @@
+---
+- name: Install Oh My Zsh and plugins (zsh-z, zsh-autosuggestions, zsh-syntax-highlighting, zsh-you-should-use, zsh-bat)
+  hosts: localhost
+  become: false
+  tasks:
+    - name: Check if Zsh is already installed
+      shell: which zsh
+      register: zsh_installed
+      ignore_errors: true
+
+    - name: Install Zsh if not installed
+      homebrew:
+        name: zsh
+        state: present
+      when: zsh_installed.rc != 0
+
+    - name: Check if Oh My Zsh is already installed
+      stat:
+        path: '{{ ansible_env.HOME }}/.oh-my-zsh'
+      register: oh_my_zsh_installed
+
+    - name: Install Oh My Zsh
+      shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      args:
+        creates: '{{ ansible_env.HOME }}/.oh-my-zsh'
+      when: not oh_my_zsh_installed.stat.exists
+
+    - name: Install bat command-line tool
+      homebrew:
+        name: bat
+        state: present
+
+    - name: Clone zsh-z plugin repository
+      git:
+        repo: https://github.com/agkozak/zsh-z.git
+        dest: '{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-z'
+      when: oh_my_zsh_installed.stat.exists
+
+    - name: Clone zsh-autosuggestions plugin repository
+      git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions.git
+        dest: '{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
+      when: oh_my_zsh_installed.stat.exists
+
+    - name: Clone zsh-syntax-highlighting plugin repository
+      git:
+        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+        dest: '{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting'
+      when: oh_my_zsh_installed.stat.exists
+
+    - name: Clone zsh-you-should-use plugin repository
+      git:
+        repo: https://github.com/MichaelAquilina/zsh-you-should-use.git
+        dest: '{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-you-should-use'
+      when: oh_my_zsh_installed.stat.exists
+
+    - name: Clone zsh-bat plugin repository
+      git:
+        repo: https://github.com/fdellwing/zsh-bat.git
+        dest: '{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-bat'
+      when: oh_my_zsh_installed.stat.exists
+
+    - name: Ensure all plugins are loaded in .zshrc
+      lineinfile:
+        path: '{{ ansible_env.HOME }}/.zshrc'
+        regexp: '^plugins=.*'
+        line: 'plugins=(git zsh-z zsh-autosuggestions zsh-syntax-highlighting zsh-you-should-use zsh-bat)'
+
+    - name: Ensure zsh-syntax-highlighting is sourced at the end of .zshrc
+      lineinfile:
+        path: '{{ ansible_env.HOME }}/.zshrc'
+        line: 'source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
+        insertafter: EOF
+
+    - name: Display message to reload shell
+      debug:
+        msg: "Oh My Zsh and plugins (zsh-z, zsh-autosuggestions, zsh-syntax-highlighting, zsh-you-should-use, zsh-bat) installed. Please reload your shell (e.g., run 'exec zsh') to activate changes."
