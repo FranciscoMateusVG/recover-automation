@@ -1,0 +1,66 @@
+---
+- name: Install Mac Apps
+  hosts: localhost
+  tasks:
+    - name: Install MAS
+      homebrew:
+        name: mas
+        state: present
+
+    - name: Confirm MAS installation
+      command: mas version
+      register: mas_version
+      changed_when: false
+
+    - name: Output version
+      debug:
+        msg: 'MAS version: {{ mas_version.stdout }}'
+
+    - name: Install Dashlane
+      mas:
+        id: 517914548
+        state: present
+
+    - name: Install Microsoft Word
+      mas:
+        id: 462054704
+        state: present
+
+    - name: Install Microsoft Excel
+      mas:
+        id: 462058435
+        state: present
+
+    - name: Install Microsoft PowerPoint
+      mas:
+        id: 462062816
+        state: present
+
+    - name: Install CopyClip
+      mas:
+        id: 595191960
+        state: present
+
+    - name: Install Spark
+      mas:
+        id: 1176895641
+        state: present
+
+    - name: Install Todoist
+      mas:
+        id: 585829637
+        state: present
+
+    - name: Install Xcode
+      mas:
+        state: present
+
+    - name: Install iScreen Shoter
+      mas:
+        id: 1596559494
+        state: present
+
+    - name: Install Slack
+      mas:
+        id: 803453959
+        state: present
