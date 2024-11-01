@@ -1,5 +1,5 @@
 ---
-- name: Install Volta and Deno
+- name: Install Languages
   hosts: localhost
   tasks:
     - name: Install Volta Node Version Manager
@@ -14,11 +14,6 @@
       args:
         creates: /usr/local/bin/node
 
-    - name: Install Deno
-      homebrew:
-        name: deno
-        state: present
-
     - name: Confirm Volta installation
       command: volta --version
       register: volta_version
@@ -29,9 +24,24 @@
       register: node_version
       changed_when: false
 
+    - name: Install Deno
+      homebrew:
+        name: deno
+        state: present
+
     - name: Confirm Deno installation
       command: deno --version
       register: deno_version
+      changed_when: false
+
+    - name: Install Rust
+      homebrew:
+        name: rust
+        state: present
+
+    - name: Confirm Rust installation
+      command: rustc --version
+      register: rust_version
       changed_when: false
 
     - name: Output versions
@@ -40,3 +50,4 @@
           - 'Volta version: {{ volta_version.stdout }}'
           - 'Node version: {{ node_version.stdout }}'
           - 'Deno version: {{ deno_version.stdout }}'
+          - 'Rust version: {{ rust_version.stdout }}'

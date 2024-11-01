@@ -1,0 +1,19 @@
+---
+- name: Install Brew Packages
+  hosts: localhost
+  become: false
+  tasks:
+    - name: Install direnv
+      homebrew:
+        name: direnv
+        state: present
+
+    - name: Set direnv configuration in .zshrc
+      blockinfile:
+        path: '{{ ansible_env.HOME }}/.zshrc'
+        marker: '# {mark} direnv configuration'
+        content: |
+          # direnv
+          eval "$(direnv hook zsh)"
+        create: yes
+        state: present
