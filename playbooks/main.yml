@@ -1,4 +1,7 @@
 ---
-- import_playbook: install_languages.yml
-- import_playbook: install_just.yml
 - import_playbook: install_git.yml
+- import_playbook: install_brew_packages.yml
+- import_playbook: install_oh_my_zsh.yml
+- import_playbook: install_just.yml
+- import_playbook: install_languages.yml
+- import_playbook: install_mac_apps.yml

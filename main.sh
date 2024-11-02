@@ -6,6 +6,9 @@ if [ "$(uname)" == "Darwin" ]; then
   if ! command -v brew &> /dev/null; then
     echo "Homebrew not found. Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    echo >> /Users/franciscogoncalves/.zprofile
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/franciscogoncalves/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 
   echo "Updating Homebrew..."
@@ -21,7 +24,7 @@ fi
 if command -v ansible &> /dev/null
 then
   echo "Ansible installed successfully."
-  ansible-playbook playbooks/install_volta_deno.yml
+  ansible-playbook playbooks/main.yml
 else
   echo "Ansible installation failed."
   exit 1
