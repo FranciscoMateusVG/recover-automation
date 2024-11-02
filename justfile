@@ -1,4 +1,4 @@
-run:
+run-all:
     @echo "Running ansible"
     ansible-playbook playbooks/main.yml
 
