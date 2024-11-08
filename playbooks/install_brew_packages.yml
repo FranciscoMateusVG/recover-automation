@@ -17,3 +17,8 @@
           eval "$(direnv hook zsh)"
         create: yes
         state: present
+
+    - name: Install pnpm
+      homebrew:
+        name: pnpm
+        state: present
